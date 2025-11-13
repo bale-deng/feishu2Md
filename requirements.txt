@@ -10,17 +10,32 @@
 # ----------------------------------------------------------------------------
 # 核心依赖 (必需)
 # ----------------------------------------------------------------------------
-# 用途: 显示命令行进度条，提供友好的处理进度反馈
-# 所有模块都会用到此库
+
+# 进度条显示库
+# 用途: 为命令行版本提供友好的处理进度反馈
+# 使用场景: 所有处理模块都会用到此库来显示进度
 tqdm>=4.66.0
 
-# ----------------------------------------------------------------------------
-# GUI 界面支持 (可选)
-# ----------------------------------------------------------------------------
-# 用途: 为 feishu2md.py 提供图形界面支持
-# 如果只使用命令行版本 (main.py)，可以不安装此依赖
-# 注意: 此包仅用于检测依赖，实际不直接使用 python-docx 的功能
+# Word 文档处理库
+# 用途: 用于依赖检测，确保系统已安装 python-docx
+# 使用场景: main.py 和 feishu2md.py 的依赖检查功能
+# 注意: 虽然项目本身不直接使用 python-docx 的功能（实际转换由 Pandoc 完成）
+#       但此包用于验证环境完整性
 python-docx>=1.1.0
+
+# ----------------------------------------------------------------------------
+# 可选依赖
+# ----------------------------------------------------------------------------
+
+# GUI 支持 (通常随 Python 一起安装，但某些环境可能需要单独安装)
+# 用途: 为 feishu2md.py 提供图形界面支持
+# 使用场景: 仅当使用 GUI 版本 (feishu2md.py) 时需要
+# 
+# Windows/macOS: tkinter 通常已包含在 Python 安装中
+# Linux: 如果遇到 "No module named 'tkinter'" 错误，请执行:
+#   Ubuntu/Debian: sudo apt-get install python3-tk
+#   Fedora: sudo dnf install python3-tkinter
+#   Arch: sudo pacman -S tk
 
 # ============================================================================
 # 外部程序依赖 (必需安装)
@@ -33,11 +48,11 @@ python-docx>=1.1.0
 #
 # 安装方法：
 #
-#   Windows (推荐使用 Chocolatey):
-#     choco install pandoc
-#
-#   Windows (备选方案 - Winget):
+#   Windows (推荐使用 winget，Windows 10/11 自带):
 #     winget install --id=JohnMacFarlane.Pandoc -e
+#
+#   Windows (备选方案 - Chocolatey，需要管理员权限):
+#     choco install pandoc
 #
 #   macOS (使用 Homebrew):
 #     brew install pandoc
@@ -58,7 +73,7 @@ python-docx>=1.1.0
 #
 # 方法1: 使用自动安装脚本 (强烈推荐)
 # ----------------------------------------------------------------------------
-#   python install_dependencies.py --auto
+#   python SourceCode/install_dependencies.py --auto
 #
 #   此脚本会自动:
 #   - 检测 Python 包是否已安装
@@ -71,13 +86,15 @@ python-docx>=1.1.0
 #   pip install -r requirements.txt
 #
 #   # 安装 Pandoc (根据系统选择)
-#   choco install pandoc  # Windows
-#   brew install pandoc   # macOS
+#   winget install --id=JohnMacFarlane.Pandoc -e  # Windows 10/11
+#   choco install pandoc                          # Windows (需管理员)
+#   brew install pandoc                           # macOS
+#   sudo apt-get install pandoc                   # Linux
 #
 # 方法3: 最小安装 (仅命令行)
 # ----------------------------------------------------------------------------
 #   pip install tqdm
-#   choco install pandoc  # Windows
+#   winget install --id=JohnMacFarlane.Pandoc -e  # Windows
 #
 # ============================================================================
 
@@ -93,5 +110,23 @@ python-docx>=1.1.0
 # ============================================================================
 # - Python: 3.7+
 # - 操作系统: Windows 10/11, macOS 10.14+, Linux (Ubuntu 18.04+)
+#
+# ============================================================================
+# 项目文件说明
+# ============================================================================
+#
+# 命令行版本:
+#   - main.py: 一键式自动处理流程（推荐）
+#   - SourceCode/docx_to_markdown.py: 步骤1 - Word转Markdown
+#   - SourceCode/markdown_cleaner.py: 步骤2 - 清理HTML格式
+#   - SourceCode/markdown_repair.py: 步骤3 - 修正代码块
+#   - SourceCode/markdown_setting.py: 步骤4 - 修正标题
+#   - SourceCode/markdown_split.py: 步骤5 - 文件拆分
+#
+# 图形界面版本:
+#   - feishu2md.py: GUI版本，提供友好的图形界面
+#
+# 依赖管理:
+#   - SourceCode/install_dependencies.py: 自动检测和安装依赖
 #
 # ============================================================================
