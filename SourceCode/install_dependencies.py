@@ -145,89 +145,116 @@ class DependencyChecker:
                 print(f"✗ 发生错误: {e}")
 
     def download_and_install_pandoc_windows(self):
-        """在Windows上使用Chocolatey安装Pandoc。"""
+        """在Windows上安装Pandoc（优先使用winget）。"""
         print("=" * 70)
-        print("Windows 系统使用 Chocolatey 安装 Pandoc")
+        print("Windows 系统安装 Pandoc")
         print("=" * 70)
 
-        # 检查是否安装了 Chocolatey
-        if not shutil.which("choco"):
-            print("\n✗ 未检测到 Chocolatey 包管理器")
-            print("\n" + "─" * 70)
-            print("💡 什么是 Chocolatey？")
-            print("─" * 70)
-            print("Chocolatey 是 Windows 的包管理器，类似于 macOS 的 Homebrew。")
-            print("使用 Chocolatey 可以：")
-            print("  ✓ 一键安装软件，无需手动下载")
-            print("  ✓ 自动配置环境变量")
-            print("  ✓ 便于后续更新和维护")
-            print("  ✓ 与其他开发工具集成良好")
+        # 优先尝试 winget（Windows 10/11 自带，无需管理员权限）
+        if shutil.which("winget"):
+            try:
+                print("\n✓ 检测到 winget 包管理器")
+                print("💡 winget 是 Windows 10/11 自带的包管理器，无需管理员权限")
+                print("\n正在使用 winget 安装 Pandoc...")
 
-            print("\n" + "─" * 70)
-            print("📦 如何安装 Chocolatey")
-            print("─" * 70)
-            print("1. 以管理员身份打开 PowerShell")
-            print("2. 访问 https://chocolatey.org/install 获取安装命令")
-            print("3. 或直接复制运行以下命令：")
-            print("\n   Set-ExecutionPolicy Bypass -Scope Process -Force;")
-            print("   [System.Net.ServicePointManager]::SecurityProtocol =")
-            print("   [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;")
-            print("   iex ((New-Object System.Net.WebClient).DownloadString(")
-            print("   'https://community.chocolatey.org/install.ps1'))")
-            print("\n4. 安装完成后，重新运行本脚本即可自动安装 Pandoc")
-            print("─" * 70)
-            return False
+                install_cmd = [
+                    "winget", "install", 
+                    "--id", "JohnMacFarlane.Pandoc", 
+                    "-e",
+                    "--silent",
+                    "--accept-package-agreements",
+                    "--accept-source-agreements"
+                ]
+                result = subprocess.run(
+                    install_cmd,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                    encoding='utf-8'
+                )
+                
+                print("✓ Pandoc 通过 winget 安装完成！")
+                return True
+                
+            except subprocess.CalledProcessError as e:
+                print(f"\n⚠ winget 安装失败: {e}")
+                print("正在尝试备用方案（Chocolatey）...")
+            except Exception as e:
+                print(f"\n⚠ winget 安装出错: {e}")
+                print("正在尝试备用方案（Chocolatey）...")
 
-        try:
-            print("\n检测到 Chocolatey！")
-            print("\n" + "⚠" * 35 + " 重要提示 " + "⚠" * 35)
-            print("使用 Chocolatey 安装 Pandoc 需要管理员权限！")
-            print("如果当前终端不是以管理员身份运行，安装将会失败。")
-            print("=" * 70)
+        # 备用方案：使用 Chocolatey（需要管理员权限）
+        if shutil.which("choco"):
+            try:
+                print("\n✓ 检测到 Chocolatey 包管理器")
+                print("\n" + "⚠" * 35 + " 重要提示 " + "⚠" * 35)
+                print("使用 Chocolatey 安装 Pandoc 需要管理员权限！")
+                print("如果当前终端不是以管理员身份运行，安装将会失败。")
+                print("=" * 70)
 
-            print("\n正在尝试安装 Pandoc...")
+                print("\n正在使用 Chocolatey 安装 Pandoc...")
 
-            # 使用 choco 安装 pandoc，添加 -y 参数自动确认
-            install_cmd = ["choco", "install", "pandoc", "-y"]
-            result = subprocess.run(
-                install_cmd,
-                check=True,
-                capture_output=True,
-                text=True,
-                encoding='utf-8'
-            )
-            
-            print("✓ Pandoc 安装完成！")
-            print("\n安装日志摘要：")
-            # 打印最后几行输出
-            output_lines = result.stdout.split('\n')
-            for line in output_lines[-5:]:
-                if line.strip():
-                    print(f"  {line}")
-            
-            return True
-            
-        except subprocess.CalledProcessError as e:
-            print("\n" + "=" * 70)
-            print("✗ Chocolatey 安装失败")
-            print("=" * 70)
-            print(f"错误信息: {e.stderr if e.stderr else e}")
-            print("\n最常见的失败原因：需要以管理员身份运行！")
-            print("\n" + "─" * 70)
-            print("解决方案：")
-            print("─" * 70)
-            print("\n请以管理员身份运行：")
-            print("  1. 关闭当前终端")
-            print("  2. 右键点击 PowerShell 或 CMD")
-            print("  3. 选择 '以管理员身份运行'")
-            print("  4. 运行以下命令安装 Pandoc：")
-            print("\n     choco install pandoc -y")
-            print("\n安装完成后，即可正常使用本工具。")
-            print("─" * 70)
-            return False
-        except Exception as e:
-            print(f"✗ 发生错误: {e}")
-            return False
+                install_cmd = ["choco", "install", "pandoc", "-y"]
+                result = subprocess.run(
+                    install_cmd,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                    encoding='utf-8'
+                )
+                
+                print("✓ Pandoc 通过 Chocolatey 安装完成！")
+                print("\n安装日志摘要：")
+                output_lines = result.stdout.split('\n')
+                for line in output_lines[-5:]:
+                    if line.strip():
+                        print(f"  {line}")
+                
+                return True
+                
+            except subprocess.CalledProcessError as e:
+                print("\n" + "=" * 70)
+                print("✗ Chocolatey 安装失败")
+                print("=" * 70)
+                print(f"错误信息: {e.stderr if e.stderr else e}")
+                print("\n最常见的失败原因：需要以管理员身份运行！")
+                print("\n" + "─" * 70)
+                print("解决方案：")
+                print("─" * 70)
+                print("\n请以管理员身份运行：")
+                print("  1. 关闭当前终端")
+                print("  2. 右键点击 PowerShell 或 CMD")
+                print("  3. 选择 '以管理员身份运行'")
+                print("  4. 运行以下命令安装 Pandoc：")
+                print("\n     choco install pandoc -y")
+                print("\n安装完成后，即可正常使用本工具。")
+                print("─" * 70)
+                return False
+            except Exception as e:
+                print(f"✗ Chocolatey 安装出错: {e}")
+                return False
+
+        # 如果两个包管理器都不可用
+        print("\n✗ 未检测到 winget 或 Chocolatey 包管理器")
+        print("\n" + "─" * 70)
+        print("📦 推荐的安装方式")
+        print("─" * 70)
+        
+        print("\n方式1: 使用 winget（推荐，无需管理员权限）")
+        print("  • winget 是 Windows 10/11 自带的包管理器")
+        print("  • 如果不可用，请从 Microsoft Store 安装 '应用安装程序'")
+        print("  • 安装命令: winget install --id JohnMacFarlane.Pandoc -e")
+        
+        print("\n方式2: 使用 Chocolatey（需要管理员权限）")
+        print("  • 访问 https://chocolatey.org/install 安装 Chocolatey")
+        print("  • 以管理员身份运行: choco install pandoc -y")
+        
+        print("\n方式3: 手动下载安装")
+        print("  • 访问 https://pandoc.org/installing.html")
+        print("  • 下载并安装 Pandoc for Windows")
+        
+        print("─" * 70)
+        return False
 
     def download_and_install_pandoc_macos(self):
         """在macOS上下载并安装Pandoc。"""
@@ -309,8 +336,8 @@ class DependencyChecker:
             success = False
             
             if system == "Windows":
-                # Windows推荐使用Chocolatey
-                print("\n正在尝试使用 Chocolatey 安装 Pandoc...")
+                # Windows优先使用winget，备用Chocolatey
+                print("\n正在尝试安装 Pandoc（优先使用 winget）...")
                 success = self.download_and_install_pandoc_windows()
 
             elif system == "Darwin":  # macOS
@@ -371,8 +398,11 @@ class DependencyChecker:
                 print("✗ Pandoc 自动安装未成功")
                 print("=" * 70)
                 if system == "Windows":
-                    print("\n安装步骤：")
-                    print("  1. 先安装 Chocolatey (https://chocolatey.org/install)")
+                    print("\n推荐的安装步骤：")
+                    print("\n方式1 (推荐): 使用 winget（无需管理员权限）")
+                    print("  • 命令: winget install --id JohnMacFarlane.Pandoc -e")
+                    print("\n方式2: 使用 Chocolatey（需要管理员权限）")
+                    print("  1. 安装 Chocolatey (https://chocolatey.org/install)")
                     print("  2. 以管理员身份打开 PowerShell/CMD")
                     print("  3. 运行: choco install pandoc -y")
                     print("\n安装完成后，即可正常使用本工具。")
