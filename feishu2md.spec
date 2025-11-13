@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['feishu2md.py'],
+    ['SourceCode\\feishu2md.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -35,5 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['favicon.ico'],
+    icon=['ICON\\favicon.ico'],
 )

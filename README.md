@@ -1,4 +1,4 @@
-# Markdown 处理工具集 V1.0
+# Markdown 处理工具集 V1.0.01
 
 > 一个功能强大的 Markdown 文件处理工具集，专为 Word 到 Markdown 的完整转换流程设计
 
@@ -8,25 +8,26 @@
 
 ## ✨ 主要特性
 
-- 🎨 **现代化深色主题GUI界面** - 基于tkinter的原生图形界面
-- 📝 **智能表格处理** - 自动转换飞书文本表格为Markdown格式
+- 🎨 **现代化深色主题 GUI 界面** - 基于 tkinter 的原生图形界面
+- 📝 **智能表格处理** - 自动转换飞书文本表格为 Markdown 格式
 - 🔧 **代码块智能识别** - 自动区分代码块和表格格式
-- 🚀 **一键式处理流程** - CLI命令行或GUI图形界面，双模式支持
-- 🛡️ **格式保护机制** - 智能保护Markdown表格不被破坏
+- 🚀 **一键式处理流程** - CLI 命令行或 GUI 图形界面，双模式支持
+- 🛡️ **格式保护机制** - 智能保护 Markdown 表格不被破坏
 - 📦 **依赖自动安装** - 一键检测并安装所有依赖
-- 💡 **轻量级设计** - 使用Python内置库
+- 💡 **轻量级设计** - 使用 Python 内置库
 
 ## 🔧 技术栈
 
 ### 核心技术
 
 - **CLI (Command Line Interface)** - 命令行工具
-  - 使用Python标准库实现
+
+  - 使用 Python 标准库实现
   - 支持批量处理和自动化
   - 跨平台兼容
 
 - **GUI (Graphical User Interface)** - 图形界面
-  - 基于 **tkinter** (Python内置GUI库)
+  - 基于 **tkinter** (Python 内置 GUI 库)
   - 原生外观，体积小巧
   - 完美跨平台支持
 
@@ -71,9 +72,14 @@ graph LR
 
 > **注意：** exe 版本仍需要安装 Pandoc 才能正常工作
 >
+> **推荐使用 Chocolatey 安装（需要管理员权限）：**
+>
 > ```bash
+> # 以管理员身份打开 PowerShell 或 CMD，然后运行：
 > choco install pandoc
 > ```
+>
+> ⚠️ **重要提示**：使用 Chocolatey 安装需要以管理员身份运行终端！
 
 ---
 
@@ -150,15 +156,29 @@ pip install tqdm python-docx
 
 #### 2. Pandoc 安装
 
-**Windows:**
+**Windows（推荐使用 Chocolatey）:**
 
 ```bash
-# 使用 Chocolatey (推荐)
+# 方式1: Chocolatey (强烈推荐) ⚠️ 需要管理员权限
+# 右键点击 PowerShell/CMD，选择"以管理员身份运行"，然后执行：
 choco install pandoc
 
-# 或使用 Winget
-winget install --id=JohnMacFarlane.Pandoc -e
+# 方式2: Winget (无需管理员权限)
+winget install --source winget --exact --id JohnMacFarlane.Pandoc
 ```
+
+> 💡 **为什么推荐 Chocolatey？**
+>
+> - ✅ 自动配置环境变量
+> - ✅ 一键安装，无需手动下载
+> - ✅ 便于后续更新维护
+> - ✅ 与其他开发工具集成良好
+>
+> ⚠️ **重要提示**：
+>
+> - Chocolatey 安装需要**管理员权限**
+> - 请右键点击 PowerShell 或 CMD，选择"以管理员身份运行"
+> - 如果不想使用管理员权限，可以选择 Winget 或手动下载安装
 
 **macOS:**
 
@@ -362,11 +382,22 @@ python markdown_split.py output/document_repaired_corrected.md output/split
 **Q: Pandoc 未找到**
 
 ```bash
-# Windows
-winget install --id=JohnMacFarlane.Pandoc -e
+# 方式1: 使用 Chocolatey (推荐，需要管理员权限)
+# 右键点击 PowerShell/CMD，选择"以管理员身份运行"
+choco install pandoc
 
-# 或手动下载：https://pandoc.org/installing.html
+# 方式2: 使用 Winget (无需管理员权限)
+winget install --source winget --exact --id JohnMacFarlane.Pandoc
+
+# 验证安装
+pandoc --version
 ```
+
+> 💡 **提示**：
+>
+> - 如果尚未安装 Chocolatey，访问 https://chocolatey.org/install
+> - Chocolatey 需要管理员权限，请以管理员身份运行终端
+> - 不想使用管理员权限？选择 Winget 或手动下载
 
 **Q: tqdm 库缺失**
 
@@ -412,7 +443,7 @@ python markdown_cleaner.py --help
 ## 📝 注意事项
 
 - ⚠️ 每个步骤生成新文件，不会覆盖原文件
-- ⚠️ 步骤3和步骤4需要交互式输入
+- ⚠️ 步骤 3 和步骤 4 需要交互式输入
 - ⚠️ 图片自动提取到 `media/media/` 目录
 - ⚠️ 建议按顺序执行所有步骤
 - ⚠️ 处理大文件时需要更多时间
@@ -424,6 +455,7 @@ python markdown_cleaner.py --help
 本工具在处理飞书文档时，对以下格式的支持存在限制：
 
 **1. 项目符号列表（•格式）**
+
 ```
 飞书格式：
 • 第一项
@@ -434,7 +466,8 @@ python markdown_cleaner.py --help
 可能会丢失项目符号，仅保留文本内容
 ```
 
-**2. 编号项目列表（•1, •2格式）**
+**2. 编号项目列表（•1, •2 格式）**
+
 ```
 飞书格式：
 •1. 第一项
@@ -446,7 +479,8 @@ python markdown_cleaner.py --help
 ```
 
 **建议解决方案：**
-1. 在飞书中导出前，手动将列表格式转换为标准Markdown格式
+
+1. 在飞书中导出前，手动将列表格式转换为标准 Markdown 格式
 2. 或在转换后手动补充列表格式：
    ```markdown
    - 第一项
@@ -461,9 +495,10 @@ python markdown_cleaner.py --help
    ```
 
 **技术说明：**
-- 这是Pandoc转换器的已知限制
-- Markdown本身支持列表格式
-- 问题出现在Word→Markdown转换阶段
+
+- 这是 Pandoc 转换器的已知限制
+- Markdown 本身支持列表格式
+- 问题出现在 Word→Markdown 转换阶段
 - 后续版本可能会改进此功能
 
 > **提示：** 如果您的文档包含大量列表，建议在转换后手动检查和修复列表格式。
@@ -496,7 +531,37 @@ done
 
 ## 🔄 版本历史
 
-### V1.0 (2025-11)
+### V1.0.03 (2025-11-13)
+
+- 🐛 **修复 exe 环境依赖安装问题**
+  - 修复 feishu2md.exe 在无源代码环境下无法安装依赖的问题
+  - 将依赖安装逻辑完全集成到 feishu2md.py 中
+  - 移除对外部 install_dependencies.py 的依赖
+  - exe 版本现在可以完全独立运行，自动安装所有依赖
+- 🔧 **优化依赖安装流程**
+  - 统一的 GUI 安装进度显示
+  - 更完善的错误提示和解决方案
+  - 自动验证安装结果
+- 📚 **架构说明**
+  - install_dependencies.py：独立工具，适合有源代码的开发者
+  - feishu2md.py 内置检测：自动化安装，适合 exe 用户
+  - 双层保障机制，确保所有场景都能顺利安装
+
+### V1.1.0.02 (2025-11-13) ---> 未发布
+
+- 🔧 **优化 Pandoc 安装逻辑**
+  - Windows 平台统一推荐使用 Chocolatey 安装
+  - 添加管理员权限检测和自动安装功能
+  - feishu2md.exe 支持启动时自动安装 Pandoc（需管理员权限是 choco）
+  - feishu2md.exe 支持启动时自动安装 Pandoc（无需管理员权限是 winget）
+  - 优化 install_dependencies.py 的错误提示和引导
+- 📚 **文档更新**
+  - 更新 Pandoc 安装说明，强调管理员权限要求
+  - 简化安装流程说明，减少用户困惑
+  - 添加多处管理员权限相关提示
+  - 优先使用 WINGET 进行安装 Pandoc
+
+### V1.0.01 (2025-11)
 
 - ✨ 全新深色主题 GUI 界面
 - ✨ 飞书表格自动转换功能

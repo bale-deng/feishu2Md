@@ -146,20 +146,47 @@ class DependencyChecker:
 
     def download_and_install_pandoc_windows(self):
         """在Windows上使用Chocolatey安装Pandoc。"""
-        print("正在使用 Chocolatey 安装 Pandoc...")
-        
+        print("=" * 70)
+        print("Windows 系统使用 Chocolatey 安装 Pandoc")
+        print("=" * 70)
+
         # 检查是否安装了 Chocolatey
         if not shutil.which("choco"):
-            print("✗ 未检测到 Chocolatey 包管理器")
-            print("\nChocolatey 是 Windows 的包管理器，可以方便地安装软件。")
-            print("请访问 https://chocolatey.org/install 安装 Chocolatey")
-            print("\n或者手动从 https://pandoc.org/installing.html 下载安装 Pandoc")
+            print("\n✗ 未检测到 Chocolatey 包管理器")
+            print("\n" + "─" * 70)
+            print("💡 什么是 Chocolatey？")
+            print("─" * 70)
+            print("Chocolatey 是 Windows 的包管理器，类似于 macOS 的 Homebrew。")
+            print("使用 Chocolatey 可以：")
+            print("  ✓ 一键安装软件，无需手动下载")
+            print("  ✓ 自动配置环境变量")
+            print("  ✓ 便于后续更新和维护")
+            print("  ✓ 与其他开发工具集成良好")
+
+            print("\n" + "─" * 70)
+            print("📦 如何安装 Chocolatey")
+            print("─" * 70)
+            print("1. 以管理员身份打开 PowerShell")
+            print("2. 访问 https://chocolatey.org/install 获取安装命令")
+            print("3. 或直接复制运行以下命令：")
+            print("\n   Set-ExecutionPolicy Bypass -Scope Process -Force;")
+            print("   [System.Net.ServicePointManager]::SecurityProtocol =")
+            print("   [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;")
+            print("   iex ((New-Object System.Net.WebClient).DownloadString(")
+            print("   'https://community.chocolatey.org/install.ps1'))")
+            print("\n4. 安装完成后，重新运行本脚本即可自动安装 Pandoc")
+            print("─" * 70)
             return False
-        
+
         try:
-            print("检测到 Chocolatey，开始安装 Pandoc...")
-            print("提示：安装过程中可能需要管理员权限")
-            
+            print("\n检测到 Chocolatey！")
+            print("\n" + "⚠" * 35 + " 重要提示 " + "⚠" * 35)
+            print("使用 Chocolatey 安装 Pandoc 需要管理员权限！")
+            print("如果当前终端不是以管理员身份运行，安装将会失败。")
+            print("=" * 70)
+
+            print("\n正在尝试安装 Pandoc...")
+
             # 使用 choco 安装 pandoc，添加 -y 参数自动确认
             install_cmd = ["choco", "install", "pandoc", "-y"]
             result = subprocess.run(
@@ -181,15 +208,22 @@ class DependencyChecker:
             return True
             
         except subprocess.CalledProcessError as e:
-            print(f"✗ Chocolatey 安装失败")
+            print("\n" + "=" * 70)
+            print("✗ Chocolatey 安装失败")
+            print("=" * 70)
             print(f"错误信息: {e.stderr if e.stderr else e}")
-            print("\n可能的原因：")
-            print("  1. 需要以管理员身份运行")
-            print("  2. Chocolatey 未正确配置")
-            print("\n请尝试：")
-            print("  1. 以管理员身份打开 PowerShell/CMD")
-            print("  2. 运行: choco install pandoc -y")
-            print("  3. 或手动从 https://pandoc.org/installing.html 下载安装")
+            print("\n最常见的失败原因：需要以管理员身份运行！")
+            print("\n" + "─" * 70)
+            print("解决方案：")
+            print("─" * 70)
+            print("\n请以管理员身份运行：")
+            print("  1. 关闭当前终端")
+            print("  2. 右键点击 PowerShell 或 CMD")
+            print("  3. 选择 '以管理员身份运行'")
+            print("  4. 运行以下命令安装 Pandoc：")
+            print("\n     choco install pandoc -y")
+            print("\n安装完成后，即可正常使用本工具。")
+            print("─" * 70)
             return False
         except Exception as e:
             print(f"✗ 发生错误: {e}")
@@ -275,13 +309,13 @@ class DependencyChecker:
             success = False
             
             if system == "Windows":
-                # 直接从GitHub下载安装包
-                print("将从 GitHub 下载 Pandoc 安装包...")
+                # Windows推荐使用Chocolatey
+                print("\n正在尝试使用 Chocolatey 安装 Pandoc...")
                 success = self.download_and_install_pandoc_windows()
 
             elif system == "Darwin":  # macOS
-                # 直接从GitHub下载安装包
-                print("将从 GitHub 下载 Pandoc 安装包...")
+                # macOS推荐使用Homebrew，但也支持直接下载
+                print("\n正在尝试安装 Pandoc...")
                 success = self.download_and_install_pandoc_macos()
 
             elif system == "Linux":
@@ -309,7 +343,9 @@ class DependencyChecker:
                 return
 
             if success:
-                print("\n✓ Pandoc 安装完成！")
+                print("\n" + "=" * 70)
+                print("✓ Pandoc 安装完成！")
+                print("=" * 70)
                 
                 # 验证安装
                 print("\n正在验证安装...")
@@ -320,14 +356,29 @@ class DependencyChecker:
                         text=True,
                         encoding='utf-8'
                     )
-                    print(f"✓ 验证成功: {result.stdout.split(chr(10))[0]}")
+                    version_info = result.stdout.split(chr(10))[0]
+                    print(f"✓ 验证成功: {version_info}")
+                    print("\n您现在可以使用 Markdown 处理工具了！")
                 else:
                     print("⚠ 安装完成，但 Pandoc 仍未在 PATH 中找到。")
-                    print("请重启终端或重新登录后再试。")
-                    print("Windows 用户可能需要重启计算机。")
+                    print("\n可能的解决方案：")
+                    print("  1. 重启终端窗口")
+                    print("  2. 重新打开 VSCode")
+                    print("  3. 注销并重新登录")
+                    print("  4. Windows 用户：重启计算机（确保环境变量生效）")
             else:
-                print("\n✗ Pandoc 安装失败")
-                print("请访问 https://pandoc.org/installing.html 手动安装")
+                print("\n" + "=" * 70)
+                print("✗ Pandoc 自动安装未成功")
+                print("=" * 70)
+                if system == "Windows":
+                    print("\n安装步骤：")
+                    print("  1. 先安装 Chocolatey (https://chocolatey.org/install)")
+                    print("  2. 以管理员身份打开 PowerShell/CMD")
+                    print("  3. 运行: choco install pandoc -y")
+                    print("\n安装完成后，即可正常使用本工具。")
+                else:
+                    print("\n请访问以下网址手动安装：")
+                    print("  https://pandoc.org/installing.html")
 
         except subprocess.CalledProcessError as e:
             print(f"\n✗ Pandoc 安装失败: {e}")
