@@ -72,14 +72,14 @@ graph LR
 
 > **注意：** exe 版本仍需要安装 Pandoc 才能正常工作
 >
-> **推荐使用 Chocolatey 安装（需要管理员权限）：**
+> **推荐使用 winget 安装（Windows 10/11 自带，无需管理员权限）：**
 >
 > ```bash
-> # 以管理员身份打开 PowerShell 或 CMD，然后运行：
-> choco install pandoc
+> # 直接在 PowerShell 或 CMD 中运行：
+> winget install --id JohnMacFarlane.Pandoc -e
 > ```
 >
-> ⚠️ **重要提示**：使用 Chocolatey 安装需要以管理员身份运行终端！
+> 💡 **提示**：winget 是 Windows 10/11 自带的包管理器，无需管理员权限即可安装！
 
 ---
 
@@ -156,29 +156,30 @@ pip install tqdm python-docx
 
 #### 2. Pandoc 安装
 
-**Windows（推荐使用 Chocolatey）:**
+**Windows（推荐使用 winget）:**
 
 ```bash
-# 方式1: Chocolatey (强烈推荐) ⚠️ 需要管理员权限
+# 方式1: winget (推荐，Windows 10/11 自带，无需管理员权限)
+winget install --id JohnMacFarlane.Pandoc -e
+
+# 方式2: Chocolatey (需要管理员权限)
 # 右键点击 PowerShell/CMD，选择"以管理员身份运行"，然后执行：
 choco install pandoc
-
-# 方式2: Winget (无需管理员权限)
-winget install --source winget --exact --id JohnMacFarlane.Pandoc
 ```
 
-> 💡 **为什么推荐 Chocolatey？**
+> 💡 **为什么推荐 winget？**
 >
+> - ✅ Windows 10/11 系统自带，无需额外安装
+> - ✅ **无需管理员权限**即可安装软件
 > - ✅ 自动配置环境变量
 > - ✅ 一键安装，无需手动下载
 > - ✅ 便于后续更新维护
-> - ✅ 与其他开发工具集成良好
 >
-> ⚠️ **重要提示**：
+> 💡 **提示**：
 >
-> - Chocolatey 安装需要**管理员权限**
-> - 请右键点击 PowerShell 或 CMD，选择"以管理员身份运行"
-> - 如果不想使用管理员权限，可以选择 Winget 或手动下载安装
+> - winget 在 Windows 10 1809+ 和 Windows 11 中默认可用
+> - 如果 winget 不可用，可以从 Microsoft Store 安装 "应用安装程序"
+> - 需要管理员权限？可以选择 Chocolatey 或手动下载安装
 
 **macOS:**
 
@@ -192,7 +193,7 @@ brew install pandoc
 sudo apt-get update && sudo apt-get install -y pandoc
 ```
 
-## 🆕 V1.0 新特性
+## 🆕 软件特性
 
 ### 🎨 深色主题 UI
 
@@ -382,12 +383,12 @@ python markdown_split.py output/document_repaired_corrected.md output/split
 **Q: Pandoc 未找到**
 
 ```bash
-# 方式1: 使用 Chocolatey (推荐，需要管理员权限)
+# 方式1: 使用 winget (推荐，Windows 10/11 自带，无需管理员权限)
+winget install --id JohnMacFarlane.Pandoc -e
+
+# 方式2: 使用 Chocolatey (需要管理员权限)
 # 右键点击 PowerShell/CMD，选择"以管理员身份运行"
 choco install pandoc
-
-# 方式2: 使用 Winget (无需管理员权限)
-winget install --source winget --exact --id JohnMacFarlane.Pandoc
 
 # 验证安装
 pandoc --version
@@ -395,9 +396,10 @@ pandoc --version
 
 > 💡 **提示**：
 >
-> - 如果尚未安装 Chocolatey，访问 https://chocolatey.org/install
-> - Chocolatey 需要管理员权限，请以管理员身份运行终端
-> - 不想使用管理员权限？选择 Winget 或手动下载
+> - 优先推荐使用 winget，它是 Windows 10/11 自带的包管理器
+> - winget 无需管理员权限，安装更方便
+> - 如果 winget 不可用，可以从 Microsoft Store 安装 "应用安装程序"
+> - 需要管理员权限？可以选择 Chocolatey 或从官网手动下载
 
 **Q: tqdm 库缺失**
 
@@ -529,47 +531,19 @@ done
 - 表格转换 → 毫秒级
 - GUI 响应 → 流畅无卡顿
 
-## 🔄 版本历史
+## 📋 文档
 
-### V1.0.03 (2025-11-13)
+- **[完整版本历史](Versiion.md)** - 查看所有版本的详细更新日志
+- **[当前版本](Versiion.md#-v1003-2025-11-13)** - V1.0.03 (2025-11-13)
 
-- 🐛 **修复 exe 环境依赖安装问题**
-  - 修复 feishu2md.exe 在无源代码环境下无法安装依赖的问题
-  - 将依赖安装逻辑完全集成到 feishu2md.py 中
-  - 移除对外部 install_dependencies.py 的依赖
-  - exe 版本现在可以完全独立运行，自动安装所有依赖
-- 🔧 **优化依赖安装流程**
-  - 统一的 GUI 安装进度显示
-  - 更完善的错误提示和解决方案
-  - 自动验证安装结果
-- 📚 **架构说明**
-  - install_dependencies.py：独立工具，适合有源代码的开发者
-  - feishu2md.py 内置检测：自动化安装，适合 exe 用户
-  - 双层保障机制，确保所有场景都能顺利安装
+### 最新更新亮点
 
-### V1.1.0.02 (2025-11-13) ---> 未发布
+- 🐛 修复 exe 环境依赖安装问题
+- 🔧 优化依赖安装流程
+- 📚 完善错误提示和解决方案
+- ⚡ 支持 winget 和 Chocolatey 双安装方式
 
-- 🔧 **优化 Pandoc 安装逻辑**
-  - Windows 平台统一推荐使用 Chocolatey 安装
-  - 添加管理员权限检测和自动安装功能
-  - feishu2md.exe 支持启动时自动安装 Pandoc（需管理员权限是 choco）
-  - feishu2md.exe 支持启动时自动安装 Pandoc（无需管理员权限是 winget）
-  - 优化 install_dependencies.py 的错误提示和引导
-- 📚 **文档更新**
-  - 更新 Pandoc 安装说明，强调管理员权限要求
-  - 简化安装流程说明，减少用户困惑
-  - 添加多处管理员权限相关提示
-  - 优先使用 WINGET 进行安装 Pandoc
-
-### V1.0.01 (2025-11)
-
-- ✨ 全新深色主题 GUI 界面
-- ✨ 飞书表格自动转换功能
-- ✨ 智能表格格式保护
-- ✨ 代码块与表格智能区分
-- ✨ 依赖自动安装工具
-- 🐛 修复多个已知问题
-- 📚 完善文档和注释
+更多详情请查看 **[Versiion.md](Versiion.md)**
 
 ## 📧 技术支持
 
@@ -581,7 +555,7 @@ done
 
 欢迎贡献代码、报告问题或提出建议！
 
-## 📄 许可证
+## � 许可证
 
 本项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。
 
