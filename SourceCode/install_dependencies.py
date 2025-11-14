@@ -96,12 +96,10 @@ class DependencyChecker:
 
         if shutil.which("pandoc") is not None:
             try:
-                result = subprocess.run(
-                    ["pandoc", "--version"],
-                    capture_output=True,
-                    text=True,
-                    encoding='utf-8'
-                )
+                result = subprocess.run(["pandoc", "--version"],
+                                        capture_output=True,
+                                        text=True,
+                                        encoding='utf-8')
                 version_line = result.stdout.split('\n')[0]
                 print(f"✓ Pandoc 已安装: {version_line}")
                 self.pandoc_installed = True
@@ -136,8 +134,7 @@ class DependencyChecker:
             try:
                 subprocess.run(
                     [sys.executable, "-m", "pip", "install", package],
-                    check=True
-                )
+                    check=True)
                 print(f"✓ {package} 安装成功")
             except subprocess.CalledProcessError as e:
                 print(f"✗ {package} 安装失败: {e}")
@@ -158,24 +155,19 @@ class DependencyChecker:
                 print("\n正在使用 winget 安装 Pandoc...")
 
                 install_cmd = [
-                    "winget", "install", 
-                    "--id", "JohnMacFarlane.Pandoc", 
-                    "-e",
-                    "--silent",
-                    "--accept-package-agreements",
+                    "winget", "install", "--id", "JohnMacFarlane.Pandoc", "-e",
+                    "--silent", "--accept-package-agreements",
                     "--accept-source-agreements"
                 ]
-                result = subprocess.run(
-                    install_cmd,
-                    check=True,
-                    capture_output=True,
-                    text=True,
-                    encoding='utf-8'
-                )
-                
+                result = subprocess.run(install_cmd,
+                                        check=True,
+                                        capture_output=True,
+                                        text=True,
+                                        encoding='utf-8')
+
                 print("✓ Pandoc 通过 winget 安装完成！")
                 return True
-                
+
             except subprocess.CalledProcessError as e:
                 print(f"\n⚠ winget 安装失败: {e}")
                 print("正在尝试备用方案（Chocolatey）...")
@@ -195,23 +187,21 @@ class DependencyChecker:
                 print("\n正在使用 Chocolatey 安装 Pandoc...")
 
                 install_cmd = ["choco", "install", "pandoc", "-y"]
-                result = subprocess.run(
-                    install_cmd,
-                    check=True,
-                    capture_output=True,
-                    text=True,
-                    encoding='utf-8'
-                )
-                
+                result = subprocess.run(install_cmd,
+                                        check=True,
+                                        capture_output=True,
+                                        text=True,
+                                        encoding='utf-8')
+
                 print("✓ Pandoc 通过 Chocolatey 安装完成！")
                 print("\n安装日志摘要：")
                 output_lines = result.stdout.split('\n')
                 for line in output_lines[-5:]:
                     if line.strip():
                         print(f"  {line}")
-                
+
                 return True
-                
+
             except subprocess.CalledProcessError as e:
                 print("\n" + "=" * 70)
                 print("✗ Chocolatey 安装失败")
@@ -239,20 +229,20 @@ class DependencyChecker:
         print("\n" + "─" * 70)
         print("📦 推荐的安装方式")
         print("─" * 70)
-        
+
         print("\n方式1: 使用 winget（推荐，无需管理员权限）")
         print("  • winget 是 Windows 10/11 自带的包管理器")
         print("  • 如果不可用，请从 Microsoft Store 安装 '应用安装程序'")
         print("  • 安装命令: winget install --id JohnMacFarlane.Pandoc -e")
-        
+
         print("\n方式2: 使用 Chocolatey（需要管理员权限）")
         print("  • 访问 https://chocolatey.org/install 安装 Chocolatey")
         print("  • 以管理员身份运行: choco install pandoc -y")
-        
+
         print("\n方式3: 手动下载安装")
         print("  • 访问 https://pandoc.org/installing.html")
         print("  • 下载并安装 Pandoc for Windows")
-        
+
         print("─" * 70)
         return False
 
@@ -260,9 +250,9 @@ class DependencyChecker:
         """在macOS上下载并安装Pandoc。"""
         import urllib.request
         import tempfile
-        
+
         print("正在下载 Pandoc for macOS...")
-        
+
         # Pandoc macOS安装包下载链接（多个镜像源）
         pandoc_version = "3.1.11"
         download_urls = [
@@ -273,12 +263,13 @@ class DependencyChecker:
             # Pandoc官方直链
             f"https://github.com/jgm/pandoc/releases/download/{pandoc_version}/pandoc-{pandoc_version}-x86_64-macOS.pkg",
         ]
-        
+
         for idx, download_url in enumerate(download_urls, 1):
             try:
                 with tempfile.TemporaryDirectory() as temp_dir:
-                    installer_path = os.path.join(temp_dir, "pandoc-installer.pkg")
-                    
+                    installer_path = os.path.join(temp_dir,
+                                                  "pandoc-installer.pkg")
+
                     # 下载安装包
                     if idx == 1:
                         print("使用清华大学镜像下载...")
@@ -286,18 +277,21 @@ class DependencyChecker:
                         print(f"尝试备用镜像 {idx}...")
                     else:
                         print("尝试官方源...")
-                    
+
                     print(f"下载地址: {download_url}")
                     urllib.request.urlretrieve(download_url, installer_path)
                     print("✓ 下载完成")
-                    
+
                     print("正在安装 Pandoc（需要管理员权限）...")
-                    install_cmd = ["sudo", "installer", "-pkg", installer_path, "-target", "/"]
+                    install_cmd = [
+                        "sudo", "installer", "-pkg", installer_path, "-target",
+                        "/"
+                    ]
                     subprocess.run(install_cmd, check=True)
-                    
+
                     print("✓ Pandoc 安装完成！")
                     return True
-                    
+
             except Exception as e:
                 print(f"✗ 该镜像下载失败: {e}")
                 if idx < len(download_urls):
@@ -306,7 +300,7 @@ class DependencyChecker:
                 else:
                     print("✗ 所有下载源均失败")
                     return False
-        
+
         return False
 
     def install_pandoc(self):
@@ -334,7 +328,7 @@ class DependencyChecker:
 
         try:
             success = False
-            
+
             if system == "Windows":
                 # Windows优先使用winget，备用Chocolatey
                 print("\n正在尝试安装 Pandoc（优先使用 winget）...")
@@ -350,15 +344,19 @@ class DependencyChecker:
                 if shutil.which("apt-get"):
                     print("使用 apt-get 安装 Pandoc...")
                     subprocess.run(["sudo", "apt-get", "update"], check=True)
-                    subprocess.run(["sudo", "apt-get", "install", "-y", "pandoc"], check=True)
+                    subprocess.run(
+                        ["sudo", "apt-get", "install", "-y", "pandoc"],
+                        check=True)
                     success = True
                 elif shutil.which("dnf"):
                     print("使用 dnf 安装 Pandoc...")
-                    subprocess.run(["sudo", "dnf", "install", "-y", "pandoc"], check=True)
+                    subprocess.run(["sudo", "dnf", "install", "-y", "pandoc"],
+                                   check=True)
                     success = True
                 elif shutil.which("yum"):
                     print("使用 yum 安装 Pandoc...")
-                    subprocess.run(["sudo", "yum", "install", "-y", "pandoc"], check=True)
+                    subprocess.run(["sudo", "yum", "install", "-y", "pandoc"],
+                                   check=True)
                     success = True
                 else:
                     print("✗ Linux 系统需要使用包管理器安装。")
@@ -373,16 +371,14 @@ class DependencyChecker:
                 print("\n" + "=" * 70)
                 print("✓ Pandoc 安装完成！")
                 print("=" * 70)
-                
+
                 # 验证安装
                 print("\n正在验证安装...")
                 if shutil.which("pandoc"):
-                    result = subprocess.run(
-                        ["pandoc", "--version"],
-                        capture_output=True,
-                        text=True,
-                        encoding='utf-8'
-                    )
+                    result = subprocess.run(["pandoc", "--version"],
+                                            capture_output=True,
+                                            text=True,
+                                            encoding='utf-8')
                     version_info = result.stdout.split(chr(10))[0]
                     print(f"✓ 验证成功: {version_info}")
                     print("\n您现在可以使用 Markdown 处理工具了！")
@@ -400,9 +396,11 @@ class DependencyChecker:
                 if system == "Windows":
                     print("\n推荐的安装步骤：")
                     print("\n方式1 (推荐): 使用 winget（无需管理员权限）")
-                    print("  • 命令: winget install --id JohnMacFarlane.Pandoc -e")
+                    print(
+                        "  • 命令: winget install --id JohnMacFarlane.Pandoc -e")
                     print("\n方式2: 使用 Chocolatey（需要管理员权限）")
-                    print("  1. 安装 Chocolatey (https://chocolatey.org/install)")
+                    print(
+                        "  1. 安装 Chocolatey (https://chocolatey.org/install)")
                     print("  2. 以管理员身份打开 PowerShell/CMD")
                     print("  3. 运行: choco install pandoc -y")
                     print("\n安装完成后，即可正常使用本工具。")
@@ -467,33 +465,20 @@ class DependencyChecker:
             self.check_all_python_packages()
             self.check_pandoc()
 
-        # 打印摘要
         self.print_summary()
 
 
 def main():
     """主函数。"""
-    parser = argparse.ArgumentParser(
-        description="检测并安装 Markdown 处理工具所需的依赖项"
-    )
-    parser.add_argument(
-        '--check-only',
-        action='store_true',
-        help='仅检测依赖，不安装'
-    )
-    parser.add_argument(
-        '--auto',
-        action='store_true',
-        help='自动安装所有缺失的依赖（不询问）'
-    )
+    parser = argparse.ArgumentParser(description="检测并安装 Markdown 处理工具所需的依赖项")
+    parser.add_argument('--check-only', action='store_true', help='仅检测依赖，不安装')
+    parser.add_argument('--auto', action='store_true', help='自动安装所有缺失的依赖（不询问）')
 
     args = parser.parse_args()
 
     try:
-        checker = DependencyChecker(
-            auto_install=args.auto,
-            check_only=args.check_only
-        )
+        checker = DependencyChecker(auto_install=args.auto,
+                                    check_only=args.check_only)
         checker.run()
     except KeyboardInterrupt:
         print("\n\n用户中断操作。")
