@@ -532,8 +532,8 @@ done
 
 ## 📋 文档
 
-- **[完整版本历史](Version.md)** - 查看所有版本的详细更新日志
-- **[当前版本](Version.md#-v1003-2025-11-13)** - V1.0.03 (2025-11-13)
+- **[完整版本历史](./PROJECT_GUARD/Version.md)** - 查看所有版本的详细更新日志
+- **[当前版本](./PROJECT_GUARD/Version.md#-v1003-2025-11-13)** - V1.0.03 (2025-11-13)
 
 ### 最新更新亮点
 
@@ -542,7 +542,7 @@ done
 - 📚 完善错误提示和解决方案
 - ⚡ 支持 winget 和 Chocolatey 双安装方式
 
-更多详情请查看 **[Version.md](Version.md)**
+更多详情请查看 **[./Project_GUARD/Version.md](./PROJECT_GUARD/Version.md)**
 
 ## 📧 技术支持
 
